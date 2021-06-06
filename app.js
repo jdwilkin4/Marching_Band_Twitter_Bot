@@ -1,7 +1,7 @@
 const Twit = require('twit');
 const config = require('./config');
 
-const twitterSetup = new Twit(config)
+let twitterSetup = new Twit(config)
 
 
 // testing  tweet 'hello world!'
