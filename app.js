@@ -1,24 +1,52 @@
 const Twit = require('twit');
 const config = require('./config');
 
-const twitterSetup = new Twit(config)
+const twitterSetup = new Twit(config);
 
+const retweet = (searchText) => {
+    //setting parameters for the search/tweet api endpoints
+    //search params per documentation https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets
+    let params = {
+        q: searchText + '',
+        result_type: 'mixed',
+        count: 25,
+    };
 
-//starting stream and tracking keywords
-const stream = twitterSetup.stream('statuses/filter', { track: '#DCI2021, #marchingband' });
+    twitterSetup.get('search/tweets', params, (errSearch, bandSearch, responseSearch) => {
+        let tweets = bandSearch.statuses
 
-// use this to log errors from requests
+        if (!errSearch) {
+            let tweetIDList = [];
+            for (const tweet of tweets) {
+                //avoid duplicate tweets
+                if (tweet.text.startsWith("RT @")) {
+                    console.log("\nStarts with RT@, adding retweeted status id_str")
+                    tweet.retweeted_status ? tweetIDList.push(tweet.retweeted_status.id_str) : tweetIDList.push(tweet.id_str)
+                } else {
+                    tweetIDList.push(tweet.id_str);
+                }
+            }
+            //looking for only unique tweets
+            tweetIDList = tweetIDList.filter((value, index, self) => self.indexOf(value) === index)
 
-function responseCallback(err, data, response) {
-    console.log(err);
-}
+            //print to console list of unique tweets
+            console.log("TweetID LIST = \n" + tweetIDList)
 
-//event handler
-stream.on('tweet', tweet => {
-    //retweet
-    twitterSetup.post('statuses/retweet/:id', { id: tweet.id_str }, responseCallback);
+            //code for retweets
+            for (let tweetID of tweetIDList) {
+                twitterSetup.post('statuses/retweet/:id', { id: tweetID }, (errorRetweet, bandRetweet, responseRetweet) => {
+                    !errorRetweet ? console.log("\n\nRetweeted! ID - " + tweetID) : console.log("\nError... Duplication maybe... or something else " + tweetID)
+                })
+            }
 
-    //like tweet
-    twitterSetup.post('favorites/create', { id: tweet.id_str }, responseCallback);
-});
+        } else {
+            console.log('Error while searching' + errSearch)
+            process.exit(1)
+        }
+    });
+
+};
+
+//check for retweets every minute
+setInterval(() => { retweet('#DCI2021 OR #marchingband'); }, 6000)
 
