@@ -39,7 +39,7 @@ const retweet = (searchText) => {
                     !errorRetweet ? console.log("\n\nRetweeted! ID - " + tweetID) : console.log("\nError... Duplication maybe... or something else " + tweetID)
                 })
                 //code for likes
-                let id = tweets.id_str
+                let id = { id: tweets.id_str }
                 twitterSetup.post('favorites/create', id, (err) => {
                     err ? console.log('Error! Unable to like tweet.') : console.log('Bot just liked a tweet')
                 })
