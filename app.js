@@ -38,12 +38,12 @@ const retweet = (searchText) => {
                 twitterSetup.post('statuses/retweet/:id', { id: tweetID }, (errorRetweet, bandRetweet, responseRetweet) => {
                     !errorRetweet ? console.log("\n\nRetweeted! ID - " + tweetID) : console.log("\nError... Duplication maybe... or something else " + tweetID)
                 })
-                //code for likes
-                let id = { id: tweets.id_str }
-                twitterSetup.post('favorites/create', id, (err) => {
-                    err ? console.log('Error! Unable to like tweet.') : console.log('Bot just liked a tweet')
-                })
             }
+            //code for likes
+            let id = { id: tweets.id_str }
+            twitterSetup.post('favorites/create', id, (err) => {
+                err ? console.log('Error! Unable to like tweet.') : console.log('Bot just liked a tweet')
+            })
 
         } else {
             console.log('Error while searching' + errSearch)
