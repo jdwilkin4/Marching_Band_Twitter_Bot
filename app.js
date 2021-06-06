@@ -1,12 +1,7 @@
-require('dotenv').config
-const Twit = require('twit')
+const Twit = require('twit');
+const config = require('./config');
 
-const twitterSetup = new Twit({
-    consumer_key: process.env.API_Key,
-    consumer_secret: process.env.API_Secret_Key,
-    access_token: process.env.Access_Token,
-    access_token_secret: process.env.Access_Token_Secret
-});
+const twitterSetup = new Twit(config)
 
 //starting stream and tracking keywords
 const stream = twitterSetup.stream('statuses/filter', { track: '#DCI2021, #marchingband' });
