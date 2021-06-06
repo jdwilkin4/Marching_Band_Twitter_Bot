@@ -1,14 +1,8 @@
 const Twit = require('twit');
 const config = require('./config');
 
-let twitterSetup = new Twit(config)
+const twitterSetup = new Twit(config)
 
-
-// testing  tweet 'hello world!'
-
-twitterSetup.post('statuses/update', { status: 'Looking forward to DCI performances' }, function (err, data, response) {
-    console.log(data)
-})
 
 //starting stream and tracking keywords
 const stream = twitterSetup.stream('statuses/filter', { track: '#DCI2021, #marchingband' });
