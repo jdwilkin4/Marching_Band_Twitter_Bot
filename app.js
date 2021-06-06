@@ -32,10 +32,16 @@ const retweet = (searchText) => {
             //print to console list of unique tweets
             console.log("TweetID LIST = \n" + tweetIDList)
 
-            //code for retweets
+
             for (let tweetID of tweetIDList) {
+                //code for retweets
                 twitterSetup.post('statuses/retweet/:id', { id: tweetID }, (errorRetweet, bandRetweet, responseRetweet) => {
                     !errorRetweet ? console.log("\n\nRetweeted! ID - " + tweetID) : console.log("\nError... Duplication maybe... or something else " + tweetID)
+                })
+                //code for likes
+                let id = tweets.id_str
+                twitterSetup.post('favorites/create', id, (err) => {
+                    err ? console.log('Error! Unable to like tweet.') : console.log('Bot just liked a tweet')
                 })
             }
 
