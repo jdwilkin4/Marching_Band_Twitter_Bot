@@ -4,7 +4,7 @@ const config = require('./config');
 const twitterSetup = new Twit(config)
 
 //starting stream and tracking keywords
-const stream = twitterSetup.stream('statuses/filter', { track: '#DCI2021, #marchingband' });
+const stream = twitterSetup.stream('statuses/filter', { track: ' #marchingband' });
 
 // use this to log errors from requests
 
