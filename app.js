@@ -12,7 +12,7 @@ const retweet = (searchText) => {
         count: 25,
     };
 
-    twitterSetup.get('search/tweets', params, (err) => {
+    twitterSetup.get('search/tweets', params, (err, data) => {
 
         if (!err) {
 
