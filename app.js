@@ -12,28 +12,49 @@ const retweet = (searchText) => {
         count: 25,
     };
 
-    twitterSetup.get('search/tweets', params, (err, data) => {
+    twitterSetup.get('search/tweets', params, (errSearch, bandSearch, responseSearch) => {
+        let tweets = bandSearch.statuses
 
-        if (!err) {
+        if (!errSearch) {
+            let tweetIDList = [];
+            for (const tweet of tweets) {
+                //avoid duplicate tweets
+                if (tweet.text.startsWith("RT @")) {
+                    console.log("\nStarts with RT@, adding retweeted status id_str")
+                    tweet.retweeted_status ? tweetIDList.push(tweet.retweeted_status.id_str) : tweetIDList.push(tweet.id_str)
+                } else {
+                    tweetIDList.push(tweet.id_str);
+                }
+            }
+            //looking for only unique tweets
+            tweetIDList = tweetIDList.filter((value, index, self) => self.indexOf(value) === index)
 
-            for (let i = 0; i < data.statuses.length; i++) {
+            //print to console list of unique tweets
+            console.log("TweetID LIST = \n" + tweetIDList)
 
-                let id = { id: data.statuses[i].id_str }
 
-                //Favorite the selected Tweet
-                twitterSetup.post('favorites/create', id, (err) => {
-                    err ? console.log('There was an error') : console.log('bot just liked a tweet')
-                });
-
-                //retweet the post
-                twitterSetup.post('statuses/retweet/:id', id, (errorRetweet) => {
-                    !errorRetweet ? console.log("\n\nRetweeted! ID - " + id) : console.log("\nError..." + id)
+            for (let tweetID of tweetIDList) {
+                //code for retweets
+                twitterSetup.post('statuses/retweet/:id', { id: tweetID }, (errorRetweet, bandRetweet, responseRetweet) => {
+                    !errorRetweet ? console.log("\n\nRetweeted! ID - " + tweetID) : console.log("\nError... Duplication maybe... or something else " + tweetID)
                 })
 
+                //code for likes
+                let id = { id: tweetID.id_str }
+                twitterSetup.post('favorites/create', id, (err, response) => {
+                    if (err) {
+                        console.log('Error! Unable to like tweet.')
+                    } else {
+                        let username = response.user.screen_name;
+                        let responseID = response.id_str;
+                        console.log('Favorited: ', `https://twitter.com/${username}/status/${responseID}`)
+                    }
+                })
             }
 
+
         } else {
-            console.log('Error while searching' + err)
+            console.log('Error while searching' + errSearch)
             process.exit(1)
         }
     });
@@ -41,5 +62,5 @@ const retweet = (searchText) => {
 };
 
 //check for retweets every minute
-setInterval(() => { retweet('#DCI2021 OR #marchingband'); }, 60000)
+setInterval(() => { retweet('#DCI2021 OR #marchingband'); }, 6000)
 
