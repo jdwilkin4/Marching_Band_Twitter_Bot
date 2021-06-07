@@ -41,14 +41,8 @@ const retweet = (searchText) => {
 
                 //code for likes
                 let id = { id: tweetID.id_str }
-                twitterSetup.post('favorites/create', id, (err, response) => {
-                    if (err) {
-                        console.log('Error! Unable to like tweet.')
-                    } else {
-                        let username = response.user.screen_name;
-                        let responseID = response.id_str;
-                        console.log('Favorited: ', `https://twitter.com/${username}/status/${responseID}`)
-                    }
+                twitterSetup.post('favorites/create', id, (err) => {
+                    err ? console.log('Error! Unable to like tweet.') : console.log('Favorited a tweet ')
                 })
             }
 
