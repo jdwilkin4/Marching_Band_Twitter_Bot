@@ -18,35 +18,20 @@ const retweet = (searchText) => {
         if (!errSearch) {
             let tweetIDList = [];
             for (const tweet of tweets) {
-                //avoid duplicate tweets
-                if (tweet.text.startsWith("RT @")) {
-                    console.log("\nStarts with RT@, adding retweeted status id_str")
-                    tweet.retweeted_status ? tweetIDList.push(tweet.retweeted_status.id_str) : tweetIDList.push(tweet.id_str)
-                } else {
-                    tweetIDList.push(tweet.id_str);
-                }
+                tweetIDList.push(tweet.id_str);
             }
-            //looking for only unique tweets
-            tweetIDList = tweetIDList.filter((value, index, self) => self.indexOf(value) === index)
-
-            //print to console list of unique tweets
-            console.log("TweetID LIST = \n" + tweetIDList)
 
 
             for (let tweetID of tweetIDList) {
                 //code for retweets
                 twitterSetup.post('statuses/retweet/:id', { id: tweetID }, (errorRetweet, bandRetweet, responseRetweet) => {
-                    !errorRetweet ? console.log("\n\nRetweeted! ID - " + tweetID) : console.log("\nError... Duplication maybe... or something else " + tweetID)
+                    !errorRetweet ? console.log("\n\nRetweeted! ID - " + tweetID) : console.log("\nError..." + tweetID)
                 })
 
                 //code for likes
                 let id = { id: tweetID.id_str }
                 twitterSetup.post('favorites/create', id, (err, response) => {
-                    if (err) {
-                        console.log('Error! Unable to like tweet.')
-                    } else {
-                        console.log('Bot just like a post')
-                    }
+                    err ? console.log('Error! Unable to like tweet.') : console.log('Bot just like a post')
                 })
             }
 
