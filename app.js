@@ -12,32 +12,28 @@ const retweet = (searchText) => {
         count: 25,
     };
 
-    twitterSetup.get('search/tweets', params, (errSearch, bandSearch, responseSearch) => {
-        let tweets = bandSearch.statuses
+    twitterSetup.get('search/tweets', params, (err) => {
 
-        if (!errSearch) {
-            let tweetIDList = [];
-            for (const tweet of tweets) {
-                tweetIDList.push(tweet.id_str);
-            }
+        if (!err) {
 
+            for (let i = 0; i < data.statuses.length; i++) {
 
-            for (let tweetID of tweetIDList) {
-                //code for retweets
-                twitterSetup.post('statuses/retweet/:id', { id: tweetID }, (errorRetweet, bandRetweet, responseRetweet) => {
-                    !errorRetweet ? console.log("\n\nRetweeted! ID - " + tweetID) : console.log("\nError..." + tweetID)
+                let id = { id: data.statuses[i].id_str }
+
+                //Favorite the selected Tweet
+                twitterSetup.post('favorites/create', id, (err) => {
+                    err ? console.log('There was an error') : console.log('bot just liked a tweet')
+                });
+
+                //retweet the post
+                twitterSetup.post('statuses/retweet/:id', id, (errorRetweet) => {
+                    !errorRetweet ? console.log("\n\nRetweeted! ID - " + id) : console.log("\nError..." + id)
                 })
 
-                //code for likes
-                let id = { id: tweetID.id_str }
-                twitterSetup.post('favorites/create', id, (err, response) => {
-                    err ? console.log('Error! Unable to like tweet.') : console.log('Bot just like a post')
-                })
             }
-
 
         } else {
-            console.log('Error while searching' + errSearch)
+            console.log('Error while searching' + err)
             process.exit(1)
         }
     });
