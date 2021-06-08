@@ -11,3 +11,6 @@ It is has been programmed to look for key marching band hashtags.
 ## Twitter Hashtags the bot responds to
 #DCI2021
 #marchingband
+
+You can follow the bot here 
+https://twitter.com/BotMarching
