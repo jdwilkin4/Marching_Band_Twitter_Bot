@@ -55,6 +55,6 @@ const retweet = (searchText) => {
 
 };
 
-//check for retweets every minute
+
 setInterval(() => { retweet('#DCI2021 OR #marchingband'); }, 6000)
 
