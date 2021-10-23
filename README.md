@@ -12,7 +12,7 @@ The main job of the twitter bot is to retweet any content related to marching ba
 It is has been programmed to look for key marching band hashtags.
 
 ## Twitter Hashtags the bot responds to
-#DCI2021
+#DCI2021<br>
 #marchingband
 
 You can follow the bot here 
